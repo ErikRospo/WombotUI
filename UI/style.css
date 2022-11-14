@@ -1,0 +1,24 @@
+.button {
+    color:black;
+    font-size: larger;    
+}
+#reject-button{
+    background-color: #f44;
+}
+#accept-button{
+    background-color: lightgreen;
+}
+#skip-button{
+    background-color: yellow;
+}
+#prompt{
+    font-size:larger;
+}
+#style_int{
+    font-size: larger;
+}
+#controls{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+}
