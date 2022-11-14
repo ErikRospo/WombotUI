@@ -51,6 +51,7 @@ class Server(BaseHTTPRequestHandler):
         elif self.path=="/getleft":
             with open("./generated/paths.txt","rt") as f:
                 lines=f.readlines()
+            print(len(lines))
             self.wfile.write(bytes(str(len(lines)),encoding="utf-8"))
         elif self.path=="/accept":
             if current_file!=None:
