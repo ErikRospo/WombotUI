@@ -21,6 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
       image.src = "http://localhost:8080/new";
 
       image.addEventListener("load", () => {
+        //FIXME: the server fails to connect to the host (net::ERR_CONNECTION_RESET)
+        // may have something to do with multiple requests coming in at the same time?
+        // But that should be impossible, given how we .then() everything
         fetch("http://localhost:8080/current/id").then((val) => {
           val.body
             .getReader()
