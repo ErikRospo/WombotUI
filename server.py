@@ -3,6 +3,7 @@ import base64
 import json
 import os
 import random
+import threading
 from http.client import NO_CONTENT, NOT_FOUND, OK
 from http.server import BaseHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
 
@@ -16,8 +17,10 @@ def lookupstyle(num):
     for n in range(len(s)):
         if s[n].get("id")==num:
             return s[n].get("name")
-            
+def createMoreImages():
+    os.system("node multirun.js > /dev/null")       
 class ReqHandler(BaseHTTPRequestHandler):
+    
     def do_GET(self):
         global current_file
 
@@ -34,6 +37,9 @@ class ReqHandler(BaseHTTPRequestHandler):
         elif self.path=="/getleft":
             self.send_response(OK)
             self.send_header("Content-type", "text/plain")
+        elif self.path=="/genmore":
+            self.send_response(OK)
+            
         else:
             self.send_response(NOT_FOUND,"Page not found")
             self.send_header("Content-type","text/html")
@@ -83,11 +89,22 @@ class ReqHandler(BaseHTTPRequestHandler):
                 with open("./generated/paths.txt","wt") as f:
                     f.writelines(lines)
                 os.remove("./generated/unread/"+fp.removesuffix(" "))
-    
+        elif self.path=="/genmore":
+            if self.more!=None:
+                if not self.more.is_alive():
+                    self.more=threading.Thread(target=createMoreImages,dameon=True)
+                    self.more.start()
+                    self.wfile.write(b"Task started")
+                else:
+                    self.wfile.write(b"Task already in progress")
+            else:                    
+                self.more=threading.Thread(target=createMoreImages,dameon=True)
+                self.more.start()
+                self.wfile.write(b"Task started")
 if __name__ == "__main__":        
     webServer = HTTPServer((hostName, serverPort), ReqHandler)
+    webServer.more=None
     print("Server started http://%s:%s" % (hostName, serverPort))
-
     try:
         webServer.serve_forever()
     except KeyboardInterrupt:
