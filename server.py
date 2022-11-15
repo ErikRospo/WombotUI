@@ -1,7 +1,11 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from http.client import OK,NO_CONTENT,NOT_FOUND
+#!/usr/bin/python3
+import base64
 import json
-import os,random,base64
+import os
+import random
+from http.client import NO_CONTENT, NOT_FOUND, OK
+from http.server import BaseHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
+
 hostName = "localhost"
 serverPort = 8080
 current_file=()
@@ -13,7 +17,7 @@ def lookupstyle(num):
         if s[n].get("id")==num:
             return s[n].get("name")
             
-class Server(BaseHTTPRequestHandler):
+class ReqHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         global current_file
 
@@ -81,7 +85,7 @@ class Server(BaseHTTPRequestHandler):
                 os.remove("./generated/unread/"+fp.removesuffix(" "))
     
 if __name__ == "__main__":        
-    webServer = HTTPServer((hostName, serverPort), Server)
+    webServer = HTTPServer((hostName, serverPort), ReqHandler)
     print("Server started http://%s:%s" % (hostName, serverPort))
 
     try:

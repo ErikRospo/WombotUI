@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "chrome",
+            "name": "https://127.0.0.1:5500/UI/index.html",
+            "request": "launch",
+            "url": "https://127.0.0.1:5500/UI/index.html"
+        }
+    ]
+}

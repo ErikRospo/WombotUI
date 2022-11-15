@@ -7,24 +7,28 @@ document.addEventListener("DOMContentLoaded", () => {
   let style_int = document.getElementById("style_int");
   let left = document.getElementById("images_left");
   let left_var = 1;
-  let r = fetch("http://localhost:8080/getleft").then((res) => {
+  const HOSTNAME = "localhost";
+  const PORT = "8080";
+  const baseADDR = `http://${HOSTNAME}:${PORT}`;
+  let r = fetch(`${baseADDR}/getleft`).then((res) => {
     res.body
       .getReader()
       .read()
       .then((value) => {
-        left.innerText = `Images Left:${new TextDecoder().decode(value.value)}`
+        left.innerText = `Images Left:${new TextDecoder().decode(value.value)}`;
         left_var = Number(new TextDecoder().decode(value.value));
       });
   });
   function refresh_img() {
     if (left_var > 0) {
-      image.src = "http://localhost:8080/new";
+      image.src = `${baseADDR}/new`;
+      
 
       image.addEventListener("load", () => {
         //FIXME: the server fails to connect to the host (net::ERR_CONNECTION_RESET)
         // may have something to do with multiple requests coming in at the same time?
-        // But that should be impossible, given how we .then() everything
-        fetch("http://localhost:8080/current/id").then((val) => {
+        // Looking into it, this seems to be the case.
+        fetch(`${baseADDR}/current/id`).then((val) => {
           val.body
             .getReader()
             .read()
@@ -43,13 +47,13 @@ document.addEventListener("DOMContentLoaded", () => {
     refresh_img();
   });
   accept.addEventListener("click", () => {
-    fetch("http://localhost:8080/accept").then(() => {
+    fetch(`${baseADDR}/accept`).then(() => {
       refresh_img();
       left_var -= 1;
     });
   });
   reject.addEventListener("click", () => {
-    fetch("http://localhost:8080/reject").then(() => {
+    fetch(`${baseADDR}/reject`).then(() => {
       refresh_img();
       left_var -= 1;
     });
