@@ -10,6 +10,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
 hostName = "localhost"
 serverPort = 8080
 current_file=()
+more=None
 def lookupstyle(num):
     s={}
     with open("./styles.json","rt") as f:
@@ -90,20 +91,20 @@ class ReqHandler(BaseHTTPRequestHandler):
                     f.writelines(lines)
                 os.remove("./generated/unread/"+fp.removesuffix(" "))
         elif self.path=="/genmore":
-            if self.more!=None:
-                if not self.more.is_alive():
-                    self.more=threading.Thread(target=createMoreImages,dameon=True)
-                    self.more.start()
+            global more
+            if more!=None:
+                if not more.is_alive():
+                    more=threading.Thread(target=createMoreImages,daemon=True)
+                    more.start()
                     self.wfile.write(b"Task started")
                 else:
                     self.wfile.write(b"Task already in progress")
             else:                    
-                self.more=threading.Thread(target=createMoreImages,dameon=True)
-                self.more.start()
+                more=threading.Thread(target=createMoreImages,daemon=True)
+                more.start()
                 self.wfile.write(b"Task started")
 if __name__ == "__main__":        
     webServer = HTTPServer((hostName, serverPort), ReqHandler)
-    webServer.more=None
     print("Server started http://%s:%s" % (hostName, serverPort))
     try:
         webServer.serve_forever()
