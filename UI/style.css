@@ -25,3 +25,9 @@
     bottom: 0;
     right: 0;
 }
+#accept-button:active{
+    box-shadow: inset 2px black;
+}
+#reject-button:active{
+    box-shadow: inset 2px black;
+}

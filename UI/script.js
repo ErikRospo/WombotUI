@@ -11,51 +11,52 @@ document.addEventListener("DOMContentLoaded", () => {
   const PORT = "8080";
   const baseADDR = `http://${HOSTNAME}:${PORT}`;
   let r = fetch(`${baseADDR}/getleft`).then((res) => {
-    res.body
-      .getReader()
-      .read()
-      .then((value) => {
-        left.innerText = `Images Left:${new TextDecoder().decode(value.value)}`;
-        left_var = Number(new TextDecoder().decode(value.value));
-      });
+    res.text().then((value) => {
+      left.innerText = `Images Left:${value}`;
+      left_var = Number(value);
+    });
   });
   function refresh_img() {
-    if (left_var > 0) {
-      image.src = `${baseADDR}/new`;
-      
+    fetch(`${baseADDR}/getleft`).then((value) => {
+      value
+        .text()
+        .then((value) => {
+          return Number(value);
+        })
+        .then((value) => {
+          left_var = value;
+          if (left_var > 0) {
+            image.src = `${baseADDR}/new`;
 
-      image.addEventListener("load", () => {
-        //FIXME: the server fails to connect to the host (net::ERR_CONNECTION_RESET)
-        // may have something to do with multiple requests coming in at the same time?
-        // Looking into it, this seems to be the case.
-        fetch(`${baseADDR}/current/id`).then((val) => {
-          val.body
-            .getReader()
-            .read()
-            .then((value) => {
-              let textvalue = new TextDecoder().decode(value.value);
-              let l = JSON.parse(atob(textvalue));
-              style_int.innerText = `Style: ${l[1]}`;
-              prompt.innerText = `Prompt: \"${l[0]}\"`;
-              left.innerText = `Images Left: ${left_var}`;
+            image.addEventListener("load", () => {
+              //FIXME: the server fails to connect to the host (net::ERR_CONNECTION_RESET)
+              // may have something to do with multiple requests coming in at the same time?
+              // Looking into it, this seems to be the case.
+              fetch(`${baseADDR}/current/id`).then((val) => {
+                val.text().then((value) => {
+                  let l = JSON.parse(atob(value));
+                  style_int.innerText = `Style: ${l[1]}`;
+                  prompt.innerText = `Prompt: \"${l[0]}\"`;
+                  left.innerText = `Images Left: ${left_var}`;
+                });
+              });
             });
+          }
         });
-      });
-    }
+    });
   }
+  //http://127.0.0.1:5500/UI/
   r.then(() => {
     refresh_img();
   });
   accept.addEventListener("click", () => {
     fetch(`${baseADDR}/accept`).then(() => {
       refresh_img();
-      left_var -= 1;
     });
   });
   reject.addEventListener("click", () => {
     fetch(`${baseADDR}/reject`).then(() => {
       refresh_img();
-      left_var -= 1;
     });
   });
   skip.addEventListener("click", () => {
