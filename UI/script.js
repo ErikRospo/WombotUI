@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let reject = document.getElementById("reject-button");
   let skip = document.getElementById("skip-button");
   let genmore = document.getElementById("more-button");
-  let status=document.getElementById("status_bar");
+  let status = document.getElementById("status_bar");
   let prompt = document.getElementById("prompt");
   let style_int = document.getElementById("style_int");
   let left = document.getElementById("images_left");
@@ -37,9 +37,16 @@ document.addEventListener("DOMContentLoaded", () => {
               fetch(`${baseADDR}/current/id`).then((val) => {
                 val.text().then((value) => {
                   let l = JSON.parse(atob(value));
-                  style_int.innerText = `Style: ${l[1]}`;
+
                   prompt.innerText = `Prompt: \"${l[0]}\"`;
                   left.innerText = `Images Left: ${left_var}`;
+                  fetch(`${baseADDR}/style/` + l[1]).then((resvalue) => {
+                    resvalue.text().then((strvalue) => {
+
+                      console.log(strvalue)
+                      style_int.innerText = `Style: ${strvalue} (${l[1]})`;
+                    });
+                  });
                 });
               });
             });
@@ -64,11 +71,11 @@ document.addEventListener("DOMContentLoaded", () => {
   skip.addEventListener("click", () => {
     refresh_img();
   });
-  genmore.addEventListener("click",()=>{
-    fetch(`${baseADDR}/genmore`).then((val)=>{
-      val.text().then((value)=>{
-        status.innerText=value
-      })  
-    })
-  })
+  genmore.addEventListener("click", () => {
+    fetch(`${baseADDR}/genmore`).then((val) => {
+      val.text().then((value) => {
+        status.innerText = value;
+      });
+    });
+  });
 });

@@ -11,13 +11,14 @@ hostName = "localhost"
 serverPort = 8080
 current_file=()
 more=None
+MAX_TRASH_ITEMS=10
 def lookupstyle(num):
     s={}
     with open("./styles.json","rt") as f:
         s=json.load(f)
     for n in range(len(s)):
-        if s[n].get("id")==num:
-            return s[n].get("name")
+        if s[n]["id"]==num:
+            return s[n]["name"]
 def createMoreImages():
     os.system("node multirun.js > /dev/null")       
 class ReqHandler(BaseHTTPRequestHandler):
@@ -40,6 +41,9 @@ class ReqHandler(BaseHTTPRequestHandler):
             self.send_header("Content-type", "text/plain")
         elif self.path=="/genmore":
             self.send_response(OK)
+        elif self.path.startswith("/style/"):
+            self.send_response(OK)
+            self.send_header("Content-type", "text/plain")
             
         else:
             self.send_response(NOT_FOUND,"Page not found")
@@ -81,14 +85,28 @@ class ReqHandler(BaseHTTPRequestHandler):
                 os.remove("./generated/unread/"+fp.removesuffix(" "))
         elif self.path=="/reject":
             if current_file!=None:
-                
                 fp=current_file[0]
+
+                vals=json.loads(base64.decodebytes(current_file[1].encode("utf-8")).decode("utf-8"))
+                newfp="./generated/rejected/"
+                os.makedirs(newfp,exist_ok=True)
                 with open("./generated/paths.txt","rt") as f:
                     lines=f.readlines()
                     lines.remove(current_file[0]+":"+current_file[1])
                 with open("./generated/paths.txt","wt") as f:
                     f.writelines(lines)
+                with open(newfp+fp.removesuffix(" "),"wb") as f:
+                    with open("./generated/unread/"+fp.removesuffix(" "),"rb") as last_one:
+                        f.write(last_one.read())
                 os.remove("./generated/unread/"+fp.removesuffix(" "))
+                if len(os.listdir("./generated/rejected/"))>MAX_TRASH_ITEMS:
+                    print("Too many items, cleaning")
+                    max_so_far=[os.stat(newfp+fp.removesuffix(" ")),newfp+fp.removesuffix(" ")]
+                    for x in os.scandir("./generated/rejected/"):
+                        if x.stat().st_ctime<max_so_far[0].st_ctime:
+                            max_so_far=[x.stat(),x.path]
+                    os.remove(x.path)
+
         elif self.path=="/genmore":
             global more
             if more!=None:
@@ -102,6 +120,10 @@ class ReqHandler(BaseHTTPRequestHandler):
                 more=threading.Thread(target=createMoreImages,daemon=True)
                 more.start()
                 self.wfile.write(b"Task started")
+        elif self.path.startswith("/style/"):
+            stylenum=int(self.path.split("/")[2])
+            self.wfile.write(bytes(str(lookupstyle(stylenum)),encoding="utf-8"))
+
 if __name__ == "__main__":        
     webServer = ThreadingHTTPServer((hostName, serverPort), ReqHandler)
     print("Server started http://%s:%s" % (hostName, serverPort))
