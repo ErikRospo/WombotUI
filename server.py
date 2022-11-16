@@ -12,7 +12,7 @@ if len(sys.argv)>1:
     serverPort=int(sys.argv[1])
 else:
     serverPort=8080
-hostName = "0.0.0.0"
+hostName = "localhost"
 current_file=()
 more=None
 MAX_TRASH_ITEMS=10
@@ -33,22 +33,30 @@ class ReqHandler(BaseHTTPRequestHandler):
         if self.path=="/new":
             self.send_response(OK)
             self.send_header("Content-type", "image/png")
+            self.send_header("Cache-control","no-store")
         elif self.path.startswith("/current"):
             self.send_response(OK)
             self.send_header("Content-type", "text/plain")
+            self.send_header("Cache-control","no-store")
         elif self.path=="/accept":
             self.send_response(NO_CONTENT)
+            self.send_header("Cache-control","no-store")
         elif self.path=="/reject":
             self.send_response(NO_CONTENT)
+            self.send_header("Cache-control","no-store")
+            
         elif self.path=="/getleft":
             self.send_response(OK)
             self.send_header("Content-type", "text/plain")
+            self.send_header("Cache-control","no-store")
+            
         elif self.path=="/genmore":
             self.send_response(OK)
+            self.send_header("Cache-control","no-store")
         elif self.path.startswith("/style/"):
             self.send_response(OK)
+            self.send_header("Cache-control","no-store")
             self.send_header("Content-type", "text/plain")
-            
         else:
             self.send_response(NOT_FOUND,"Page not found")
             self.send_header("Content-type","text/html")
@@ -56,13 +64,22 @@ class ReqHandler(BaseHTTPRequestHandler):
 
         self.end_headers()
         if self.path=="/new":
-            fp=""
-            with open("./generated/paths.txt","rt") as f:
-                lines=f.readlines()
-                fp=random.choice(lines).split(":")
-            current_file=fp
-            with open("./generated/unread/"+fp[0].removesuffix(" "),"rb") as f:
-                self.wfile.write(f.read())
+        
+            errored=True
+            while errored:
+                fp=""
+                # TODO: catch infinite loop when there are no images left.
+                with open("./generated/paths.txt","rt") as f:
+                    lines=f.readlines()
+                    fp=random.choice(lines).split(":")
+                current_file=fp
+                try:
+                    with open("./generated/unread/"+fp[0].removesuffix(" "),"rb") as f:
+                        self.wfile.write(f.read())
+                except:
+                    errored=True
+                else:
+                    errored=False
         elif self.path=="/current/id":
             self.wfile.write(bytes(current_file[1],encoding="utf-8"))
         elif self.path=="/current/path":
