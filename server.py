@@ -3,12 +3,16 @@ import base64
 import json
 import os
 import random
+import sys
 import threading
 from http.client import NO_CONTENT, NOT_FOUND, OK
-from http.server import BaseHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-hostName = "localhost"
-serverPort = 8080
+if len(sys.argv)>1:
+    serverPort=int(sys.argv[1])
+else:
+    serverPort=8080
+hostName = "0.0.0.0"
 current_file=()
 more=None
 MAX_TRASH_ITEMS=10
