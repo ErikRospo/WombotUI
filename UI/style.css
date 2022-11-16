@@ -1,6 +1,11 @@
 .button {
     color:black;
     font-size: larger;    
+    left:0;
+    right: 0;
+}
+.button:active{
+    box-shadow: inset 2px black;
 }
 #reject-button{
     background-color: #f44;
@@ -11,23 +16,18 @@
 #skip-button{
     background-color: yellow;
 }
-#prompt{
-    font-size:larger;
+#more-button{
+    background-color: #a000e0;
 }
-#style_int{
+pre{
     font-size: larger;
-}
-#images_left{
-    font-size:larger;
 }
 #controls{
     position: fixed;
-    bottom: 0;
     right: 0;
+    box-sizing: border-box;
+    bottom: 0;
 }
-#accept-button:active{
-    box-shadow: inset 2px black;
-}
-#reject-button:active{
-    box-shadow: inset 2px black;
+#prompt{
+    width: fit-content;
 }

@@ -62,7 +62,6 @@ class ReqHandler(BaseHTTPRequestHandler):
         elif self.path=="/getleft":
             with open("./generated/paths.txt","rt") as f:
                 lines=f.readlines()
-            print(len(lines))
             self.wfile.write(bytes(str(len(lines)),encoding="utf-8"))
         elif self.path=="/accept":
             if current_file!=None:
@@ -104,7 +103,7 @@ class ReqHandler(BaseHTTPRequestHandler):
                 more.start()
                 self.wfile.write(b"Task started")
 if __name__ == "__main__":        
-    webServer = HTTPServer((hostName, serverPort), ReqHandler)
+    webServer = ThreadingHTTPServer((hostName, serverPort), ReqHandler)
     print("Server started http://%s:%s" % (hostName, serverPort))
     try:
         webServer.serve_forever()

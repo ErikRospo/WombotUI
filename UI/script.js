@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let accept = document.getElementById("accept-button");
   let reject = document.getElementById("reject-button");
   let skip = document.getElementById("skip-button");
+  let genmore = document.getElementById("more-button");
+  let status=document.getElementById("status_bar");
   let prompt = document.getElementById("prompt");
   let style_int = document.getElementById("style_int");
   let left = document.getElementById("images_left");
@@ -62,4 +64,11 @@ document.addEventListener("DOMContentLoaded", () => {
   skip.addEventListener("click", () => {
     refresh_img();
   });
+  genmore.addEventListener("click",()=>{
+    fetch(`${baseADDR}/genmore`).then((val)=>{
+      val.text().then((value)=>{
+        status.innerText=value
+      })  
+    })
+  })
 });
