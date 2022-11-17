@@ -12,7 +12,7 @@ if len(sys.argv)>1:
     serverPort=int(sys.argv[1])
 else:
     serverPort=8080
-hostName = "0.0.0.0"
+hostName = "100.115.92.201"
 current_file=()
 more=None
 MAX_TRASH_ITEMS=10
@@ -33,6 +33,7 @@ class ReqHandler(BaseHTTPRequestHandler):
         if self.path=="/new":
             self.send_response(OK)
             self.send_header("Content-type", "image/png")
+            self.send_header("Cache-control","no-store")
         elif self.path.startswith("/current"):
             self.send_response(OK)
             self.send_header("Content-type", "text/plain")

@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let style_int = document.getElementById("style_int");
   let left = document.getElementById("images_left");
   let left_var = 1;
-  const HOSTNAME = "localhost";
-  const PORT = "8080";
+  const HOSTNAME = "100.115.92.201";
+  const PORT = "4202";
   const baseADDR = `http://${HOSTNAME}:${PORT}`;
   let r = fetch(`${baseADDR}/getleft`).then((res) => {
     res.text().then((value) => {
