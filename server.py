@@ -57,6 +57,8 @@ class ReqHandler(BaseHTTPRequestHandler):
         self.end_headers()
         if self.path=="/new":
             fp=""
+            # TODO: whenever we try to read an image, and find that it doesn't exist, we want to call a function that will recalculate paths.txt
+            # it will go through each line, and for each path, see if it exists. if it does, we keep it. if it doesn't, we discard it.
             with open("./generated/paths.txt","rt") as f:
                 lines=f.readlines()
                 fp=random.choice(lines).split(":")
