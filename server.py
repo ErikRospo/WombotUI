@@ -65,21 +65,28 @@ class ReqHandler(BaseHTTPRequestHandler):
         self.end_headers()
         if self.path=="/new":
         
-            errored=True
-            while errored:
-                fp=""
+            fp=""
+            # TODO: catch infinite loop when there are no images left.
+            with open("./generated/paths.txt","rt") as f:
+                lines=f.readlines()
+                fp=random.choice(lines).split(":")
+            current_file=fp
+            try:
+                with open("./generated/unread/"+fp[0].removesuffix(" "),"rb") as f:
+                    self.wfile.write(f.read())
+            except:
+                with open("./generated/paths.txt","rt") as f:
+                    lines=f.readlines()
+                lines.remove(current_file[0]+":"+current_file[1])
+                with open("./generated/paths.txt","wt") as f:
+                    f.writelines(lines)
                 # TODO: catch infinite loop when there are no images left.
                 with open("./generated/paths.txt","rt") as f:
                     lines=f.readlines()
                     fp=random.choice(lines).split(":")
                 current_file=fp
-                try:
-                    with open("./generated/unread/"+fp[0].removesuffix(" "),"rb") as f:
-                        self.wfile.write(f.read())
-                except:
-                    errored=True
-                else:
-                    errored=False
+                with open("./generated/unread/"+fp[0].removesuffix(" "),"rb") as f:
+                    self.wfile.write(f.read())
         elif self.path=="/current/id":
             self.wfile.write(bytes(current_file[1],encoding="utf-8"))
         elif self.path=="/current/path":
