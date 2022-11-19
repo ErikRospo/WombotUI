@@ -55,7 +55,6 @@ class ReqHandler(BaseHTTPRequestHandler):
             self.send_header("Cache-control","no-store")
         elif self.path.startswith("/style/"):
             self.send_response(OK)
-            self.send_header("Cache-control","no-store")
             self.send_header("Content-type", "text/plain")
         else:
             self.send_response(NOT_FOUND,"Page not found")

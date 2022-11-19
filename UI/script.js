@@ -20,6 +20,25 @@ document.addEventListener('DOMContentLoaded', () => {
       left_var = Number(value)
     })
   })
+  image.addEventListener('load', () => {
+    fetch(`${baseADDR}/current/id`).then(val => {
+      val.text().then(value => {
+        let l = JSON.parse(atob(value))
+
+        prompt.innerText = `Prompt: \"${l[0]}\"`
+        if (stylemap.has(l[1])) {
+          style_int.innerText = `Style: ${stylemap.get(l[1])} (${l[1]})`
+        } else {
+          fetch(`${baseADDR}/style/` + l[1]).then(resvalue => {
+            resvalue.text().then(strvalue => {
+              style_int.innerText = `Style: ${strvalue} (${l[1]})`
+              stylemap.set(l[1], strvalue)
+            })
+          })
+        }
+      })
+    })
+  })
   function refresh_img () {
     fetch(`${baseADDR}/getleft`).then(value => {
       value
@@ -31,29 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
           left_var = value
           if (left_var > 0) {
             image.src = `${baseADDR}/new`
-
-            image.addEventListener('load', () => {
-              fetch(`${baseADDR}/current/id`).then(val => {
-                val.text().then(value => {
-                  let l = JSON.parse(atob(value))
-
-                  prompt.innerText = `Prompt: \"${l[0]}\"`
-                  left.innerText = `Images Left: ${left_var}`
-                  if (stylemap.has(l[1])) {
-                    style_int.innerText = `Style: ${stylemap.get(
-                      l[1]
-                    )} (${l[1]})`
-                  } else {
-                    fetch(`${baseADDR}/style/` + l[1]).then(resvalue => {
-                      resvalue.text().then(strvalue => {
-                        style_int.innerText = `Style: ${strvalue} (${l[1]})`
-                        stylemap.set(l[1], strvalue)
-                      })
-                    })
-                  }
-                })
-              })
-            })
+            left.innerText = `Images Left: ${left_var}`
           }
         })
     })
