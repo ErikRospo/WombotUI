@@ -4,11 +4,32 @@ const fs = require("fs");
 
 let prompts = fs.readFileSync("prompts.txt", "utf-8").split("\n");
 let stylesOld = fs.readFileSync("styles.txt", "utf-8").split("\n");
+
+
+
+function lookupstylenum(st){
+  if (typeof st =="number"){
+    return st
+  } else if (typeof st=="string"){
+    
+    let stylescontent=fs.readFileSync("./styles.json")
+    /**@type {Array} */
+    let stylesmap=JSON.parse(stylescontent.toString("utf-8"))
+    for (let index = 0; index < stylesmap.length; index++) {
+      const element = stylesmap[index];
+      if (st.toLowerCase()==element.name.toLowerCase() || element.id==st){
+        return element.id
+      }
+      
+    }
+    
+  }
+}
 prompts = prompts.filter((f) => {
   return f.length > 2;
 });
 let styles = stylesOld.map((f) => {
-  return Number(f);
+  return lookupstylenum(f);
 });
 styles = styles.filter((f) => {
   return f > 0;
