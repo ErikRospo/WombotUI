@@ -1,33 +1,65 @@
 .button {
-    color:black;
-    font-size: larger;    
-    left:0;
+    color: black;
+    font-size: larger;
+    left: 0;
     right: 0;
+    padding: 2px;
 }
-.button:active{
+
+.button:active {
     box-shadow: inset 2px black;
 }
-#reject-button{
+
+#reject-button {
     background-color: #f44;
 }
-#accept-button{
+
+#accept-button {
     background-color: lightgreen;
 }
-#skip-button{
+
+#skip-button {
     background-color: yellow;
 }
-#more-button{
+
+#more-button {
     background-color: #a000e0;
 }
-pre{
+
+pre {
     font-size: larger;
+    margin: 2px;
+    padding: 3px;
+    color: white;
 }
-#controls{
+
+#controls {
     position: fixed;
     right: 0;
     box-sizing: border-box;
     bottom: 0;
 }
-#prompt{
+
+#prompt {
     width: fit-content;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.imgbox {
+    display: grid;
+    height: 100%;
+}
+
+.center-fit {
+    max-width: 100%;
+    max-height: 100vh;
+    margin: auto;
+}
+
+body {
+    background-color: black;
 }
