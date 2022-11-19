@@ -85,6 +85,7 @@ class ReqHandler(BaseHTTPRequestHandler):
                 with open("./generated/unread/"+fp[0].removesuffix(" "),"rb") as f:
                     self.wfile.write(f.read())
             except:
+                refresh_paths()
                 with open("./generated/paths.txt","rt") as f:
                     lines=f.readlines()
                 lines.remove(current_file[0]+":"+current_file[1])
@@ -96,8 +97,6 @@ class ReqHandler(BaseHTTPRequestHandler):
                 current_file=fp
                 with open("./generated/unread/"+fp[0].removesuffix(" "),"rb") as f:
                     self.wfile.write(f.read())
-                fixpaths=threading.Thread(target=refresh_paths,daemon=True)
-                fixpaths.start()
                 
             
         elif self.path=="/current/id":
