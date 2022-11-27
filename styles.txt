@@ -1,7 +1,10 @@
-Paint
 polygon
 comic
 COMIC
-Paint
-PAINT
+comic
+comic
+realistic
+comic
+comic
+realistic
 comic

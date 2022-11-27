@@ -15,10 +15,7 @@ export default class Controls extends React.Component {
   TIMEOUT = 1000;
   image: any;
   props: any;
-  context: any;
-  setState: any;
-  refs: any;
-  forceUpdate: any;
+  parent: this;
   constructor(props: any) {
     super(props);
     this.props = props;
@@ -30,15 +27,16 @@ export default class Controls extends React.Component {
       status: "",
       stylemap: new Map()
     };
-    console.log(this);
   }
   componentDidMount() {
-    let r = fetch(`${this.baseADDR}/getleft`).then(res => {
+    fetch(`${this.baseADDR}/getleft`).then(res => {
       res.text().then(value => {
         this.setState({ left: Number(value) });
       });
+    }).then(()=>{
+        this.img_refresh()
     });
-    this.image.addEventListener("load", () => {
+    this.image.props.onload= (): void => {
       fetch(`${this.baseADDR}/current/id`).then(val => {
         val.text().then(value => {
           let l = JSON.parse(atob(value));
@@ -61,12 +59,9 @@ export default class Controls extends React.Component {
           }
         });
       });
-    });
-    r.then(() => {
-      this.refresh_img();
-    });
+    };
   }
-  refresh_img() {
+  img_refresh(): void {
     fetch(`${this.baseADDR}/getleft`).then(value => {
       value
         .text()
@@ -82,73 +77,70 @@ export default class Controls extends React.Component {
     });
   }
   componentWillUnmount() {}
-  accept() {
-    let refimage = this.refresh_img;
-    let setstate = this.setState;
-    let timeout = this.TIMEOUT;
-    fetch(`${this.baseADDR}/accept`).then(() => {
-      refimage();
-      setstate({ status: "accept" });
+  accept(): void {
+    fetch(`${this.parent.baseADDR}/accept`).then(() => {
+      this.parent.img_refresh();
+      this.parent.setState({ status: "Accepted" });
 
       setTimeout(() => {
-        setstate.setState({ status: "" });
-      }, timeout);
+        this.parent.setState({ status: "" });
+      }, this.parent.TIMEOUT);
     });
   }
-  reject() {
-    let refimage = this.refresh_img;
-    let setstate = this.setState;
-    let timeout = this.TIMEOUT;
-    fetch(`${this.baseADDR}/reject`).then(() => {
-      refimage();
-      setstate({ status: "Rejected" });
+  reject(): void {
+    fetch(`${this.parent.baseADDR}/reject`).then(() => {
+      this.parent.img_refresh();
+      this.parent.setState({ status: "Rejected" });
 
       setTimeout(() => {
-        setstate.setState({ status: "" });
-      }, timeout);
+        this.parent.setState({ status: "" });
+      }, this.parent.TIMEOUT);
     });
   }
-  skip() {
-    this.refresh_img();
+  skip(): void {
+    this.parent.img_refresh();
   }
   more(): void {
-    let setstate = this.setState;
-    
-    fetch(`${this.baseADDR}/genmore`).then(val => {
+
+    fetch(`${this.parent.baseADDR}/genmore`).then(val => {
       val.text().then(value => {
-        setstate({ status: value });
+        this.parent.setState({ status: value });
       });
     });
   }
   render(): JSX.Element {
     return (
-      <div id="controls" className="fixed right-0 box-border bottom-0">
+      <div id="controls" className="fixed right-0 box-border bottom-0 bg-slate-700">
         <Button
           callback={this.reject}
           id="reject-button"
           className="button bg-red-500"
           text={"REJECT"}
+          parent={this}
         />
         <Button
           callback={this.accept}
           id="accept-button"
           className="button bg-lime-500"
           text={"ACCEPT"}
+          parent={this}
         />
         <Button
           callback={this.skip}
           id="skip-button"
           className="button bg-yellow-500"
           text={"SKIP"}
+          parent={this}
         />
         <Button
           callback={this.more}
           id="more-button"
           className="button bg-purple-500"
           text={"GENERATE"}
+          parent={this}
         />
         <br />
-        <pre id="prompt" className="w-fit">
+        <pre id="prompt" className="w-fit text-white text-lg m-1 p-1">
           Prompt: "{this.state.prompt}"
         </pre>
         <pre id="style_int" className="text-lg m-1 p-1 text-white">

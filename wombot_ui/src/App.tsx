@@ -14,7 +14,7 @@ export default class App extends React.Component {
     return (
       <div className="App">
         <div className="bg-black">
-          <div className="grid h-full">
+          <div className="grid h-full bg-gray-900">
             {this.state.img}
           </div>
           <Controls img={this.state.img}/>
