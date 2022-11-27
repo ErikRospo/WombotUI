@@ -1,9 +1,13 @@
 import React from "react";
 
-export default function Button(props): JSX.Element {
-  return (
-    <button onClick={props.callback(this)} className={props}>
-      {props.text}
-    </button>
-  );
+
+export default class Button extends React.Component{
+    props: any;
+    render(){
+        return (
+            <button onClick={this.props.callback(this)} className={this.props.className}>
+              {this.props.text}
+            </button>
+          ); 
+    }
 }
