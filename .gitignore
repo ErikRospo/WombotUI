@@ -1,4 +1,5 @@
 node_modules
 generated
 identityToolkit.json
-react/wombot_ui/node_modules
+wombot_ui/node_modules
+wombot_ui/build/
