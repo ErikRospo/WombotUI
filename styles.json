@@ -158,5 +158,13 @@
 	{
 		"id": 63,
 		"name": "Spectral"
+	},
+	{
+		"id": 65,
+		"name": "Diorama"
+	},
+	{
+		"id": 68,
+		"name": "Flora"
 	}
 ]

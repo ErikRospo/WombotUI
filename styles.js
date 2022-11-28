@@ -1,4 +1,4 @@
-//1668444844409
+//1668892789532
 let styles = new Map();
 styles.set(1,"Synthwave");
 styles.set(2,"Ukiyoe");
@@ -39,6 +39,9 @@ styles.set(54,"Retro-Futurism");
 styles.set(55,"Isometric");
 styles.set(57,"Bad Trip");
 styles.set(58,"Cartoonist");
+styles.set(63,"Spectral");
+styles.set(65,"Diorama");
+styles.set(68,"Flora");
 let steps= new Map();
 steps.set(1,21);
 steps.set(2,21);
