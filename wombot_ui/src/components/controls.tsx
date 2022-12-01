@@ -73,8 +73,14 @@ export default class Controls extends React.Component {
         .then(value => {
           pobject.setState({ left: value });
           if (value > 0) {
-            console.log(pobject);
-            pobject.image.props.src = `${baseADDR}/new`;
+            pobject.image = (
+              <img
+                id="preview"
+                className="max-w-full max-h-screen m-auto"
+                alt=""
+                src={"http://localhost:8080/new"}
+              />
+            );
             console.log(pobject);
           }
         });
