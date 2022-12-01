@@ -74,7 +74,7 @@ export default class Controls extends React.Component {
           pobject.setState({ left: value });
           if (value > 0) {
             console.log(pobject);
-            pobject.props.src = `${baseADDR}/new`;
+            pobject.image.props.src = `${baseADDR}/new`;
             console.log(pobject);
           }
         });
