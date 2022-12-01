@@ -2,7 +2,7 @@ import React from "react";
 import { baseADDR, TIMEOUT } from "../constants.ts";
 //@ts-ignore
 import Button from "./button.tsx";
-
+let a = <image />;
 export default class Controls extends React.Component {
   state: {
     stylemap: Map<any, any>;
@@ -12,10 +12,10 @@ export default class Controls extends React.Component {
     status: string;
   };
 
-  image: any;
-  props: any;
+  image: typeof a;
+  props: { src: string; img: any };
   parent: this;
-  constructor(props: any) {
+  constructor(props: { img: JSX.Element; src: string }) {
     super(props);
     this.props = props;
     this.image = props.img;
@@ -28,14 +28,14 @@ export default class Controls extends React.Component {
     };
   }
   componentDidMount() {
-    fetch(`${baseADDR}/getleft`).then(res => {
+    let rpromise = fetch(`${baseADDR}/getleft`).then(res => {
       res.text().then(value => {
         this.setState({ left: Number(value) });
       });
-    }).then(()=>{
-        this.img_refresh(this)
     });
-    this.image.props.onload= (): void => {
+    // return <image onLoad={this.componentDidUpdate}></image>
+
+    this.componentDidUpdate = (): void => {
       fetch(`${baseADDR}/current/id`).then(val => {
         val.text().then(value => {
           let l = JSON.parse(atob(value));
@@ -59,6 +59,9 @@ export default class Controls extends React.Component {
         });
       });
     };
+    rpromise.then(() => {
+      this.img_refresh(this);
+    });
   }
   img_refresh(pobject: this): void {
     fetch(`${baseADDR}/getleft`).then(value => {
@@ -70,21 +73,20 @@ export default class Controls extends React.Component {
         .then(value => {
           pobject.setState({ left: value });
           if (value > 0) {
-            console.log(pobject)
-            pobject.image.props.src = `${baseADDR}/new`;
-            console.log(pobject)
+            console.log(pobject);
+            pobject.props.src = `${baseADDR}/new`;
+            console.log(pobject);
           }
         });
     });
   }
-  componentWillUnmount() {}
   accept(pobject: this): void {
     fetch(`${baseADDR}/accept`).then(() => {
       pobject.img_refresh(this);
       pobject.setState({ status: "Accepted" });
 
       setTimeout(() => {
-       pobject.setState({ status: "" });
+        pobject.setState({ status: "" });
       }, TIMEOUT);
     });
   }
@@ -95,11 +97,10 @@ export default class Controls extends React.Component {
 
       setTimeout(() => {
         pobject.setState({ status: "" });
-      },TIMEOUT);
+      }, TIMEOUT);
     });
   }
   more(): void {
-
     fetch(`${baseADDR}/genmore`).then(val => {
       val.text().then(value => {
         this.parent.setState({ status: value });
@@ -108,23 +109,32 @@ export default class Controls extends React.Component {
   }
   render(): JSX.Element {
     return (
-      <div id="controls" className="fixed right-0 box-border bottom-0 bg-slate-700">
+      <div
+        id="controls"
+        className="fixed right-0 box-border bottom-0 bg-slate-700"
+      >
         <Button
-          callback={()=>{this.reject(this)}}
+          callback={() => {
+            this.reject(this);
+          }}
           id="reject-button"
           className="button bg-red-500"
           text={"REJECT"}
           parent={this}
         />
         <Button
-          callback={()=>{this.accept(this)}}
+          callback={() => {
+            this.accept(this);
+          }}
           id="accept-button"
           className="button bg-lime-500"
           text={"ACCEPT"}
           parent={this}
         />
         <Button
-          callback={()=>{this.img_refresh(this)}}
+          callback={() => {
+            this.img_refresh(this);
+          }}
           id="skip-button"
           className="button bg-yellow-500"
           text={"SKIP"}
