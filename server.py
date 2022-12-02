@@ -42,7 +42,7 @@ class ReqHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         global current_file
 
-        if self.path=="/new":
+        if self.path.startswith("/new"):
             self.send_response(OK)
             self.send_header("Content-type", "image/png")
             self.send_header("Cache-control","no-store")
@@ -74,8 +74,7 @@ class ReqHandler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin","*")
 
         self.end_headers()
-        if self.path=="/new":
-        
+        if self.path.startswith("/new"):
             fp=""
             with open("./generated/paths.txt","rt") as f:
                 lines=f.readlines()
