@@ -2,23 +2,36 @@ import React from "react";
 import "./App.css";
 //@ts-ignore
 import Controls from "./components/controls.tsx";
+//@ts-ignore
 import { baseADDR } from "./constants.ts";
 //@ts-ignore
 export default class App extends React.Component {
-  state: any;
-  constructor(props: any) {
+  state: { controls: Controls };
+  constructor(props: { src: string }) {
     super(props);
-    this.state={img:<img id="preview" className="max-w-full max-h-screen m-auto" alt="" src={`${baseADDR}/new`}/>};
-    
+    this.state = {
+      controls: (
+        <Controls
+          img={
+            <img
+              id="preview"
+              className="max-w-full max-h-screen m-auto"
+              alt=""
+              src={"http://localhost:8080/new"}
+            />
+          }
+        />
+      )
+    };
   }
   render() {
     return (
       <div className="App">
         <div className="bg-black">
           <div className="grid h-full bg-gray-900">
-            {this.state.img}
+            {this.state.controls.image}
           </div>
-          <Controls img={this.state.img}/>
+          {this.state.controls}
         </div>
       </div>
     );
