@@ -17,19 +17,21 @@ export default class App extends React.Component {
               id="preview"
               className="max-w-full max-h-screen m-auto"
               alt=""
-              src={"http://localhost:8080/new"}
+              src={baseADDR+"/new"}
             />
           }
+          parent={this}
         />
       )
     };
   }
   render() {
     return (
-      <div className="App">
+      <div className="App bg-black">
         <div className="bg-black">
           <div className="grid h-full bg-gray-900">
             {this.state.controls.image}
+
           </div>
           {this.state.controls}
         </div>

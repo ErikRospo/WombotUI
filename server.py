@@ -12,7 +12,7 @@ if len(sys.argv)>1:
     serverPort=int(sys.argv[1])
 else:
     serverPort=8080
-hostName = "localhost"
+hostName = "0.0.0.0"
 current_file=()
 more=None
 MAX_TRASH_ITEMS=10
