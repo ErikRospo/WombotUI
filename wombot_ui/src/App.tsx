@@ -30,7 +30,7 @@ export default class App extends React.Component {
     };
   }
   componentDidMount(): void {
-    let rpromise = fetch(`${baseADDR}/getleft`)
+    fetch(`${baseADDR}/getleft`)
       .then((res) => {
         res.text().then((value) => {
           this.setState({ left: Number(value) });
@@ -42,19 +42,24 @@ export default class App extends React.Component {
         });
       });
   }
-  updater: undefined;
   refresh(thisobj: this): void {
+    console.log("refresh");
     fetch(`${baseADDR}/current/id`).then((val) => {
       val.text().then((value): void => {
         let l = JSON.parse(atob(value));
+        console.log("gotten id " +l)
+
         thisobj.setState({ prompt: l[0] });
         if (this.state.stylemap.has(l[1])) {
+          console.log("used cached style " +l[1])
           thisobj.setState({
             style: `Style: ${this.state.stylemap.get(l[1])} (${l[1]})`,
           });
         } else {
+          console.log("need to get new style "+l[1])
           fetch(`${baseADDR}/style/` + l[1]).then((resvalue) => {
             resvalue.text().then((strvalue) => {
+              console.log("got style")
               this.state.stylemap.set(l[1], strvalue);
 
               thisobj.setState({
@@ -95,7 +100,9 @@ export default class App extends React.Component {
   }
   accept(pobject: this): void {
     fetch(`${baseADDR}/accept`).then(() => {
-      pobject.img_refresh(this, nop);
+      pobject.skip(this);
+
+      // pobject.img_refresh(this, nop);
       pobject.setState({ status: "Accepted" });
 
       setTimeout(() => {
@@ -105,7 +112,9 @@ export default class App extends React.Component {
   }
   reject(pobject: this): void {
     fetch(`${baseADDR}/reject`).then(() => {
-      pobject.img_refresh(pobject, nop);
+      pobject.skip(this);
+
+      // pobject.img_refresh(this, nop);
       pobject.setState({ status: "Rejected" });
 
       setTimeout(() => {
@@ -122,6 +131,19 @@ export default class App extends React.Component {
         }, TIMEOUT);
       });
     });
+  }
+  skip(pobject: this): void {
+    fetch(`${baseADDR}/getleft`)
+      .then((res) => {
+        res.text().then((value) => {
+          pobject.setState({ left: Number(value) });
+        });
+      })
+      .then(() => {
+        pobject.img_refresh(pobject, () => {
+          pobject.refresh(pobject);
+        });
+      });
   }
   render() {
     return (
@@ -152,7 +174,7 @@ export default class App extends React.Component {
             />
             <Button
               callback={() => {
-                this.img_refresh(this, nop);
+                this.skip(this);
               }}
               id="skip-button"
               className="button bg-yellow-500"
@@ -169,15 +191,19 @@ export default class App extends React.Component {
               parent={this}
             />
             <br />
+
             <pre id="prompt" className="w-fit text-white text-lg m-1 p-1">
               Prompt: "{this.state.prompt}"
             </pre>
+
             <pre id="style_int" className="text-lg m-1 p-1 text-white">
               {this.state.style}
             </pre>
+
             <pre id="images_left" className="text-lg m-1 p-1 text-white">
               Images left: {this.state.left}
             </pre>
+
             <pre id="status_bar" className="text-lg m-1 p-1 text-white">
               {this.state.status}
             </pre>
